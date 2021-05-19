@@ -18,52 +18,76 @@
     </div>
   </div>
   <div class="lg:px-36">
-    <div class="w-full bg-white flex border-b border-gray-300 py-8">
+    <div
+      class="w-full bg-white flex border-b border-gray-300 py-8"
+      v-for="(item, index) in $store.state.detailSurah.verses"
+      :key="index"
+    >
       <div class="w-10 py-2 flex mr-3">
-        <div class="w-auto mr-5 py-3 flex flex-col justify-end">
-          <div class="bg-gray-200 p-1 rounded-md">1:1</div>
-          <div class="">play</div>
-          <div class="">:</div>
+        <div class="w-auto mr-5 py-12 flex flex-col">
+          <div class="bg-gray-200 p-1 rounded-md mt-2">
+            {{ $store.state.detailSurah.number }}:{{ item.number.inSurah }}
+          </div>
+          <div class="mt-2" @click="playAudio(item.audio.primary)">
+            <icon-pause></icon-pause>
+          </div>
+          <div class="mt-2"><icon-selection></icon-selection></div>
         </div>
       </div>
       <div class="w-full py-3 flex flex-col">
         <div class="flex justify-end">
-          <span class="text-3xl">
-            بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+          <span class="text-5xl font-arabic">
+            {{ item.text.arab }}
           </span>
         </div>
         <div class="w-full flex flex-col">
-          <span class="mt-2">
-            dengan menyebut nama allah yang maha pengasih lagi maha penyayang
-            <br />(al fatihah:1)
+          <span class="mt-8">
+            {{ item.translation.id }}
+            <br />
+            ({{ $store.state.detailSurah.name.transliteration.id }}:
+            {{ item.number.inSurah }})
           </span>
           <span class="mt-2">
-            dengan menyebut nama allah yang maha pengasih lagi maha penyayang
+            {{ item.translation.en }}
             <br />
-            (al fatihah:1)
+            ({{ $store.state.detailSurah.name.transliteration.en }}:
+            {{ item.number.inSurah }})
           </span>
         </div>
       </div>
     </div>
   </div>
+
+  <play-audio :apiaudio="audio" :play="play"></play-audio>
 </template>
 
 <script>
 import URL from "@/api/Url.js";
 // import { mapState } from "vuex";
 import navbar from "@/components/element/navbar";
+import Audio from "@/components/element/audio";
+import iconPause from "@/components/icons/pause";
+import iconSelection from "@/components/icons/selection";
 export default {
   components: {
     "nav-bar": navbar,
+    "play-audio": Audio,
+    "icon-pause": iconPause,
+    "icon-selection": iconSelection,
   },
   mounted() {
     this.$store.dispatch("detailSurah", `${URL}surah/${this.$route.params.id}`);
-    console.log(this.$store.state);
   },
-  computed: {
-    // you have access to `problems` in the template. Use `v-if` before you `v-for` over the array of problems.
-    count() {
-      return this.$store.state.nama;
+  data() {
+    return {
+      audio: "",
+      play: false,
+    };
+  },
+  methods: {
+    playAudio(apiAudio) {
+      this.audio = apiAudio;
+      this.play = true;
     },
   },
 };

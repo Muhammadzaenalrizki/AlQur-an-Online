@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="w-auto flex justify-end">
-            <span class="text-2xl text-green-400">
+            <span class="text-3xl text-green-400 font-arabic">
               {{ item.name.short }}
             </span>
           </div>
