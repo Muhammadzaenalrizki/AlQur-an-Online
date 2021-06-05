@@ -1,9 +1,11 @@
 <template>
-  ddss
   <div
     class="w-full bg-gray-100 p-3 flex justify-between lg:px-36 fixed bottom-0 z-0 py-4"
   >
     <div class="flex items-center">
+      <!-- <div v-if="Audio">play</div>
+      <div v-else>
+      </div> -->
       <icon-pause></icon-pause>
       <div class="relative w-96">
         <div class="h-3 rounded-2xl bg-gray-300 w-full"></div>
@@ -26,7 +28,7 @@ export default {
   },
   props: {
     apiaudio: {
-      type: String,
+      type: Array,
       required: true,
     },
     play: {
@@ -35,11 +37,14 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      Audio: this.$props.play,
+    };
   },
   methods: {
     Play() {
-      let audio = this.$props.apiaudio;
+      let audio = this.$props.apiaudio[0];
+      this.$store.state.play = true;
       if (audio) {
         const playAudio = new Audio(audio);
         playAudio.play();
@@ -51,6 +56,9 @@ export default {
       const progress = (currentTime / duration) * 100;
       const styleProgress = this.$refs.progress;
       styleProgress.style.width = `${progress}%`;
+      if (progress === 100) {
+        this.$store.state.play = false;
+      }
     },
   },
 };

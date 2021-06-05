@@ -10,6 +10,7 @@
         type="text"
         placeholder="search surah"
         class="text-gray-400 w-96 focus:outline-none text-xl shadow-md p-2 border-2 rounded-full border-green-300 mt-3"
+        v-model="search"
       />
       <button class="z-50 relative right-12 top-2">
         <svg
@@ -32,14 +33,14 @@
     </div>
   </div>
   <div class="lg:px-36">
-    <div class="flex flex-wrap lg:mt-2">
+    <div class="flex justify-center flex-wrap lg:mt-2">
       <router-link
-        v-for="(item, index) in $store.state.listSurah"
+        v-for="(item, index) in getListSurah"
         :key="index"
         :to="{ name: 'detailSurah', params: { id: item.number } }"
       >
         <div
-          class="bg-white flex justify-between shadow border-2 border-gray-200 p-3 lg:w-72 lg:my-2 lg:mx-1"
+          class="bg-white flex justify-between shadow border-2 border-gray-200 p-3 lg:w-64 lg:my-2 lg:mx-1"
         >
           <div class="flex w-auto justify-between">
             <div class="flex flex-col w-full">
@@ -73,6 +74,41 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch("fetchGet", `${URL}surah`);
+  },
+  data() {
+    return {
+      search: "",
+    };
+  },
+  watch: {
+    search() {
+      this.result();
+    },
+  },
+  methods: {
+    result() {
+      const dataSurah = this.$store.state.listSurah;
+      if (this.search === "") {
+        return dataSurah;
+      }
+      let data = [];
+      for (let i = 0; i < dataSurah.length; i++) {
+        const namaSurah = dataSurah[i].name.transliteration.id.toLowerCase();
+        if (namaSurah.includes(this.search.toLowerCase())) {
+          data.push(dataSurah[i]);
+        }
+      }
+      if (data.length !== 0) {
+        return data;
+      }
+      return console.log("data tifak di temukan");
+    },
+  },
+  computed: {
+    getListSurah() {
+      const dataSearch = this.result();
+      return dataSearch;
+    },
   },
 };
 </script>

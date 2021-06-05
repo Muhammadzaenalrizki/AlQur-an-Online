@@ -7,7 +7,7 @@ const store = createStore({
     state:{
             listSurah:[],
             detailSurah:[],
-            nama:'jsjs'
+            play:false
         }
     ,
  mutations,
