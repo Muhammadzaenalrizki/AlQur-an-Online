@@ -4,8 +4,9 @@
     <div>
       <input
         type="text"
-        class="rounded-3xl focus:outline-none p-2"
-        placeholder="cari ayat"
+        class="rounded-3xl focus:outline-none p-2 w-72"
+        placeholder="cari surah"
+        v-model="search"
       />
     </div>
     <div class="flex ml-3">
@@ -17,7 +18,46 @@
       </div>
     </div>
   </div>
-  <div class="lg:px-36" id="content">
+  <div :class="[listSurah.length > 0 ? 'visible' : ' invisible']">
+    <div
+      class="
+        bg-white
+        text-green-500
+        w-72
+        shadow-lg
+        absolute
+        left-36
+        rounded-lg
+        p-2
+        overflow-y-auto
+        h-56
+      "
+    >
+
+        <div class="h-16 flex cursor-pointer" 
+          v-for="(item, index) in listSurah"
+        :key="index" 
+      @click="swicthPage(item.number)"
+        >
+          <div class="w-1/2 flex items-center">
+            <div class="">
+              <span>{{ item.number }}</span>
+            </div>
+            <div class="ml-3">
+              <div class="font-bold">  
+       
+      {{ item.name.transliteration.id }}</div>
+              <div>{{ item.name.short }}</div>
+            </div>
+          </div>
+          <div class="w-1/2 text-right text-gray-700 px-3 items-center">
+            {{ item.name.translation.id }}
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="px-10 sm:px-16 md:px-10 lg:px-36" id="content">
     <div
       class="w-full bg-white flex border-b border-gray-300 py-8"
       v-for="(item, index) in $store.state.detailSurah.verses"
@@ -83,7 +123,18 @@
   </div>
 
   <div
-    class="w-full bg-gray-100 p-3 flex justify-between lg:px-36 fixed bottom-0 z-0 py-4"
+    class="
+      w-full
+      bg-gray-100
+      p-3
+      flex
+      justify-between
+      lg:px-36
+      fixed
+      bottom-0
+      z-0
+      py-4
+    "
   >
     <div class="flex items-center">
       <div v-if="play"><icon-play></icon-play></div>
@@ -117,14 +168,39 @@ export default {
   },
   mounted() {
     this.$store.dispatch("detailSurah", `${URL}surah/${this.$route.params.id}`);
+    this.$store.dispatch("fetchGet", `${URL}surah`);
   },
   data() {
     return {
       audio: [],
       play: false,
+      search: "",
+      listSurah: [],
     };
   },
+  watch: {
+    search() {
+      this.result();
+    },
+  },
   methods: {
+    result() {
+      const dataSurah = this.$store.state.listSurah;
+      if (this.search === "") {
+        return (this.listSurah = []);
+      }
+      let data = [];
+      for (let i = 0; i < dataSurah.length; i++) {
+        const namaSurah = dataSurah[i].name.transliteration.id.toLowerCase();
+        if (namaSurah.includes(this.search.toLowerCase())) {
+          data.push(dataSurah[i]);
+        }
+      }
+      if (data.length !== 0) {
+        return (this.listSurah = data);
+      }
+      return (this.listSurah = []);
+    },
     progress(e) {
       const { duration, currentTime } = e.srcElement;
       const progress = (currentTime / duration) * 100;
@@ -146,6 +222,13 @@ export default {
       }
       this.$refs.iconAudio.classList.add("hidden");
     },
+    swicthPage(id){
+      this.$router.push({name:'detailSurah',params:{id:id}})
+    this.$store.dispatch("detailSurah", `${URL}surah/${id}`);
+    return   this.$store.state.listSurah=[]
+
+     
+    }
   },
 };
 </script>

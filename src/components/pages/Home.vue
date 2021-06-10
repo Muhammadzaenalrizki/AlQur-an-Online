@@ -33,14 +33,14 @@
     </div>
   </div>
   <div class="lg:px-36">
-    <div class="flex justify-center flex-wrap lg:mt-2">
+    <div class="flex px-5  md:justify-center lg:justify-center flex-wrap lg:mt-2">
       <router-link
         v-for="(item, index) in getListSurah"
         :key="index"
         :to="{ name: 'detailSurah', params: { id: item.number } }"
-      >
+     class=" w-full mt-2 flex-col sm:w-80  md:w-72 lg:w-64 " >
         <div
-          class="bg-white flex justify-between shadow border-2 border-gray-200 p-3 lg:w-64 lg:my-2 lg:mx-1"
+          class="bg-white flex justify-between shadow border-2 border-gray-200 p-3 lg:my-2 lg:mx-1"
         >
           <div class="flex w-auto justify-between">
             <div class="flex flex-col w-full">
